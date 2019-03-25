@@ -1,7 +1,14 @@
-from sqlalchemy import Column, Integer, String
+import enum
+
+from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
+
+
+@enum.unique
+class SomeEnum(enum.Enum):
+    VALUE = "some_value"
 
 
 class TestTable(Base):
@@ -22,3 +29,6 @@ class TestTable(Base):
     # charset. This way they will be sent as 'non-unicode literals'
     # instead of N'unicode literals'.
     indexed_varchar_column = Column("key", String(50), index=True)
+    enum_column = Column(
+        "enum", Enum(SomeEnum, values_callable=lambda x: [e.value for e in x])
+    )
